@@ -10,7 +10,7 @@ mdview README.md
 That's it. Under the hood it's just `pandoc` + your browser, glued
 together with about 80 lines of Bash you can read in two minutes.
 
-| Default GitHub formatting | Wide - Document formating |
+| Default "GitHub" formatting | Wide document formating |
 |---|---|
 | ![default](screenshots/default%20github.png) | ![wide](screenshots/wide%20formatting.png) |
 
