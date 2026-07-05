@@ -7,7 +7,7 @@ GitHub-style formatting - no server, no Electron, no JavaScript framework requir
 mdview README.md
 ```
 
-That's it. Under the hood it's just `pandoc` + your browser, glued
+That's it. Under the hood it's `pandoc` + your browser, glued
 together with about 80 lines of Bash you can read in two minutes.
 
 | Default "GitHub" formatting | Wide document formating |
@@ -23,33 +23,26 @@ Most Markdown viewers for Linux are either:
 - a heavyweight native app (Electron, Tauri, Rust/egui binaries) with its
   own rendering engine, theme system, and update cycle.
 
-`mdview` takes a different approach: reuse `pandoc` (which already
-renders Markdown better than most bespoke renderers) and your existing
-browser (which already renders HTML/CSS better than any custom viewer
-ever will).  
-The script is glue, not a rendering engine - which also
-means it inherits every improvement pandoc and your browser make, for
-free, forever.
+`mdview` takes a different approach:  
+`pandoc` already renders Markdown better than most bespoke renderers and your existing
+browser renders HTML/CSS better than any custom viewer ever will.  
+The script is glue, not a rendering engine - which means it inherits all
+improvements pandoc and your browser make, for free, forever.
 
 ## Features
 
 - **Self-contained output** - images and resources are embedded
-  (base64) into a single HTML file via `pandoc --embed-resources`, so
-  the result is portable and doesn't break if the source folder moves.
-- **Works over network mounts** - resolves and `cd`s into the actual
-  directory of the Markdown file before invoking pandoc, so relative
-  image paths work correctly even over GVFS/SFTP/NFS mounts, not just
-  the local filesystem.
-- **App-style browser window** - opens in `chromium --app` or
-  `brave-browser --app` if available (clean window, no tabs or address
-  bar), falling back to `xdg-open` and your system's default browser
+  into a single HTML file so the result is portable.
+- **Works over network mounts** - relative image paths work correctly
+  even over GVFS/SFTP/NFS mounts as well as local filesystem.
+- **App-style browser window** - when chomium or brave-browser available,
+  clean window, no tabs or address bar, fall back to `xdg-open` and your system's default browser
   otherwise.
 - **Optional full-width layout** - `--wide` / `-w` overrides pandoc's
   default readability-focused max-width, letting the text reflow to
   the full browser width.
 - **Zero footprint** - temp files live in `/tmp` (RAM-backed on most
-  modern distros) and are lazily cleaned up on the next run. Nothing is
-  written next to your source files.
+  modern distros) and are lazily cleaned up on the next run.
 
 ## Requirements
 
@@ -91,14 +84,12 @@ mdview file.md -w            # flag order doesn't matter
 2. `pandoc` renders a single HTML file in `/tmp`.
    Running pandoc inside the source directory makes relative image
    embedding reliable across regular filesystems and network mounts alike.
-3. Optionally injects a small CSS override (`--wide`) that removes
-   pandoc's default max-width constraint.
+3. Optionally removes pandoc's default max-width constraint.
 4. Opens the resulting HTML file in an app-style browser window if
    `chromium` or `brave-browser` is available, otherwise hands it to
    `xdg-open`.
 5. On the *next* run, deletes leftover temp files from the previous
-   run (lazy cleanup - there's no reliable way to know when you've
-   closed the browser tab, so cleanup happens up front instead).
+   run.
 
 ## What this isn't
 
@@ -106,7 +97,7 @@ mdview file.md -w            # flag order doesn't matter
 and doesn't try to be a general-purpose document viewer. If you want
 any of that, tools like `glow`, `frogmouth`, or dedicated GUI viewers
 are a better fit.  
-`mdview` is for the specific moment when you want to see a rendered
+`mdview` is for all those moments when you want to see a rendered
 `.md` file, right now, without opening an IDE.
 
 ## License
