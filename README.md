@@ -23,7 +23,8 @@ Most Markdown viewers for Linux are either:
 `mdview` takes a different approach: reuse `pandoc` (which already
 renders Markdown better than most bespoke renderers) and your existing
 browser (which already renders HTML/CSS better than any custom viewer
-ever will). The script is glue, not a rendering engine - which also
+ever will).  
+The script is glue, not a rendering engine - which also
 means it inherits every improvement pandoc and your browser make, for
 free, forever.
 
