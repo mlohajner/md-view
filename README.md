@@ -1,7 +1,7 @@
 # mdview
 
 A small, transparent Bash script that renders Markdown files with consistent
-GitHub-style formatting — no server, no Electron, no JavaScript framework required.
+GitHub-style formatting - no server, no Electron, no JavaScript framework required.
 
 ```
 mdview README.md
