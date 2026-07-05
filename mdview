@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+#
+# mdview - converts a Markdown file into a standalone HTML file and opens it.
+#          The temp file goes strictly into /tmp when /tmp is
+#          a ramdrive -it's effectively "in memory").
+#
+# Usage:
+#   mdview.sh file.md
+#
+# Installation (to associate with .md):
+#   1. sudo cp mdview.sh /usr/local/bin/mdview
+#   2. sudo chmod +x /usr/local/bin/mdview
+#   3. Associate the .md extension with "mdview %f" (see the .desktop example below).
+#
+# Dependencies: pandoc, xdg-utils (xdg-open) - required
+#               chromium or brave-browser - optional (if present, --app mode is used)
+#
+# NOTE on cleanup:
+# xdg-open (and brave-browser --app) return control to the shell immediately,
+# so there's no process we can "wait" on until the tab/window is closed.
+# That's why old mdview-*.html files are deleted at the START of the next
+# run (lazy cleanup) - not immediately after opening.
+set -euo pipefail
+TMPDIR_USE="/tmp"
+# --- Argument check ---
+RESPONSIVE=0
+INPUT=""
+for arg in "$@"; do
+	case "$arg" in
+		--wide|-w)
+			RESPONSIVE=1
+			;;
+		*)
+			INPUT="$arg"
+			;;
+	esac
+done
+if [[ -z "$INPUT" ]]; then
+	printf " \ mdview \  Markdown Viewer\n"
+	printf "            😃 by Mario Lohajner 2026\n"
+	printf "\n"
+	echo "Usage: $(basename "$0") [--wide|-w] file.md" >&2
+	exit 1
+fi
+if [[ ! -f "$INPUT" ]]; then
+	echo "Error: file '$INPUT' does not exist." >&2
+	exit 1
+fi
+# --- Dependency check ---
+if ! command -v pandoc &>/dev/null; then
+	echo "Error: 'pandoc' is not installed (sudo dnf install pandoc)." >&2
+	exit 1
+fi
+# --- Lazy cleanup: delete mdview temp files from previous runs ---
+rm -f "$TMPDIR_USE"/mdview-*.html "$TMPDIR_USE"/mdview-width-*.css 2>/dev/null || true
+# --- New temporary HTML file ---
+HTML_FILE=$(mktemp --tmpdir="$TMPDIR_USE" mdview-XXXXXX.html)
+# --- Convert MD -> standalone HTML ---
+# We cd into the .md file's own directory before running pandoc. This is
+# the reliable fix: --resource-path alone does not consistently make
+# --embed-resources find relative images in every pandoc version /
+# filesystem combination (e.g. GVFS/sftp mounts). Running pandoc with its
+# CWD set to the .md file's directory is exactly the situation in which
+# relative image embedding is known to work, since it's identical to
+# manually running pandoc from inside that folder.
+INPUT_ABS="$(realpath "$INPUT")"
+INPUT_DIR="$(dirname "$INPUT_ABS")"
+INPUT_NAME="$(basename "$INPUT_ABS")"
+# Pandoc's default template applies a max-width to the body for
+# article-style readability (GitHub-like default). Passing --wide/-w
+# overrides this so the text reflows to the full width of the browser
+# window instead of wrapping at a fixed column count.
+PANDOC_EXTRA_ARGS=()
+WIDTH_CSS_FILE=""
+if [[ "$RESPONSIVE" -eq 1 ]]; then
+    WIDTH_CSS_FILE=$(mktemp --tmpdir="$TMPDIR_USE" mdview-width-XXXXXX.css)
+    printf '<style>\nbody { max-width: none !important; }\n</style>\n' > "$WIDTH_CSS_FILE"
+    PANDOC_EXTRA_ARGS+=(--include-in-header="$WIDTH_CSS_FILE")
+fi
+if ! (cd "$INPUT_DIR" && pandoc "$INPUT_NAME" \
+    --standalone \
+    --embed-resources \
+    "${PANDOC_EXTRA_ARGS[@]+"${PANDOC_EXTRA_ARGS[@]}"}" \
+    --metadata title="$INPUT_NAME" \
+    -o "$HTML_FILE"); then
+    rm -f "$WIDTH_CSS_FILE"
+    echo "Error: pandoc failed to convert '$INPUT' to HTML." >&2
+    rm -f "$HTML_FILE"
+    exit 1
+fi
+rm -f "$WIDTH_CSS_FILE"
+# try prefered browsers first
+if command -v chromium &>/dev/null; then
+	chromium --app="file://$HTML_FILE" &>/dev/null &
+elif command -v brave-browser &>/dev/null; then
+	brave-browser --app="file://$HTML_FILE" &>/dev/null &
+# fallback to whatever is there
+else
+	if ! command -v xdg-open &>/dev/null; then
+		echo "Error: 'xdg-open' not found (sudo dnf install xdg-utils)." >&2
+		exit 1
+	fi
+	xdg-open "$HTML_FILE"
+fi
