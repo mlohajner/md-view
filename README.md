@@ -84,12 +84,9 @@ mdview file.md -w            # flag order doesn't matter
 
 1. Resolves the Markdown file's real path and directory (handles
    symlinks and GVFS/FUSE mount paths via `realpath`).
-2. `cd`s into that directory and runs `pandoc --standalone
-   --embed-resources` to produce a single, portable HTML file in
-   `/tmp`. Running pandoc from inside the source directory - rather
-   than pointing at it via `--resource-path` - is what makes relative
-   image embedding reliable across regular filesystems and network
-   mounts alike.
+2. `pandoc` renders a single HTML file in `/tmp`.
+   Running pandoc inside the source directory makes relative image
+   embedding reliable across regular filesystems and network mounts alike.
 3. Optionally injects a small CSS override (`--wide`) that removes
    pandoc's default max-width constraint.
 4. Opens the resulting HTML file in an app-style browser window if
