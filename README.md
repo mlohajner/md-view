@@ -12,7 +12,7 @@ together with about 80 lines of Bash you can read in two minutes.
 
 | Default GitHub formatting | Wide - Document formating |
 |---|---|
-| ![default](screenshots/default%20github.png) | ![wide](screenshots/wide_formatting.png) |
+| ![default](screenshots/default%20github.png) | ![wide](screenshots/wide%20formatting.png) |
 
 ## Why
 
