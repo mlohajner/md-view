@@ -1,8 +1,7 @@
 # mdview
 
-A small, transparent Bash script that turns a Markdown file into a
-self-contained HTML file and opens it in your browser - GitHub-style
-rendering, no server, no Electron, no JavaScript framework.
+A small, transparent Bash script to visualize Markdown files...  
+consistent GitHub-style rendering, no server, no Electron, no JavaScript framework.
 
 ```
 mdview README.md
