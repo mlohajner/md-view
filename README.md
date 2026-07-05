@@ -104,8 +104,9 @@ mdview file.md -w            # flag order doesn't matter
 `mdview` isn't a Markdown editor, doesn't watch files for live-reload,
 and doesn't try to be a general-purpose document viewer. If you want
 any of that, tools like `glow`, `frogmouth`, or dedicated GUI viewers
-are a better fit. `mdview` is for the specific moment when you just
-want to see a rendered `.md` file, right now, without opening an IDE.
+are a better fit.  
+`mdview` is for the specific moment when you want to see a rendered
+`.md` file, right now, without opening an IDE.
 
 ## License
 
