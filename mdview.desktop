@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=mdview
+GenericName=Markdown Viewer
+Comment=View Markdown files as rendered HTML in your browser
+Exec=mdview %f
+Terminal=false
+Categories=Utility;TextTools;
+MimeType=text/markdown;text/x-markdown;
+NoDisplay=false
