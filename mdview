@@ -91,7 +91,7 @@ fi
 rm -f "$WIDTH_CSS_FILE"
 # try prefered browsers first
 if command -v chromium &>/dev/null; then
-	chromium --app="file://$HTML_FILE" &>/dev/null &
+	chromium-browser --app="file://$HTML_FILE" &>/dev/null &
 elif command -v brave-browser &>/dev/null; then
 	brave-browser --app="file://$HTML_FILE" &>/dev/null &
 # fallback to whatever is there
