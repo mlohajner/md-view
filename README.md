@@ -1,4 +1,4 @@
-# mdview
+<h1> <img src="mdview.png" width="40" valign="middle" alt="md-view icon"> mdview </h1>
 
 A small, transparent Bash script that renders Markdown files with consistent
 GitHub-style formatting - no server, no Electron, no JavaScript framework required.
